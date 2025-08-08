@@ -12,55 +12,151 @@ uses
   Controls,
   Forms,
   Dialogs,
-  StdCtrls;
+  StdCtrls, Vcl.ComCtrls;
 
 type
-  TForm1 = class(TForm)
-   lb: TListBox;
+  TExtProc = function(const Data: array of variant): AnsiString; stdcall;
+  tLibraries= class;
+  TLibrary = class;
+
+  TMainForm = class(TForm)
+    Button1: TButton;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TaskList: TListBox;
     procedure FormCreate(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure TabControl1Change(Sender: TObject);
   private
+    Libraries: tLibraries;
     procedure SearchForDLL;
-    procedure PrepareDLL(FileName: string);
   public
+    constructor Create(AOwner: tComponent); override;
+    destructor Destroy; override;
+  end;
+
+  tLibraries = class(tStringList)
+  private
+    Methods: tStringList;
+    function GetMethod(LibraryName, MethodName: string): pointer;
+  public
+    property Method[LibraryName, MethodName: string]: pointer read GetMethod;
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+  TLibrary = class(tStringList)
+  private
+    ImageBase: dword;
+    Description: string;
+  public
+    constructor Create(LibraryName: string);
+    destructor Destroy; override;
   end;
 
 var
-  Form1: TForm1;
+  MainForm: TMainForm;
 
 implementation
 
 {$R *.dfm}
 
 uses
+  IOUtils,
   AnsiStrings;
 
-procedure TForm1.FormCreate(Sender: TObject);
+{$REGION ' TMainForm '}
+
+procedure TMainForm.Button1Click(Sender: TObject);
+var I: integer; Sa: string; P: pointer; Tab: TTabSheet; Memo: TMemo;
+begin
+  P := Libraries.Method['DllTest1.dll', 'FindFiles'];
+  Sa := tExtProc(P)(['D:\Projects\', '*.*', 1]);
+  Tab := TTabSheet.Create(PageControl1);
+  with Tab do
+  begin
+    Visible :=True;
+    Caption := 'Поиск...';
+    PageControl := PageControl1;
+    PageControl1.ActivePage := Tab;
+  end;
+  Memo := TMemo.Create(Tab);
+  Memo.Parent := Tab;
+  Memo.Align := alClient;
+  Memo.Text := Sa;
+end;
+
+constructor TMainForm.Create(AOwner: tComponent);
+begin
+  inherited;
+  Libraries := tLibraries.Create;
+end;
+
+destructor TMainForm.Destroy;
+begin
+  Libraries.Free;;
+  inherited;
+end;
+
+procedure TMainForm.FormCreate(Sender: TObject);
 begin
   SearchForDLL;
 end;
 
-procedure TForm1.PrepareDLL(FileName: string);
-type
-  TExtProc = function(const Data: array of variant): AnsiString; stdcall;
+procedure TMainForm.SearchForDLL;
+var SearchResult: TSearchRec;
+begin
+end;
 
+procedure TMainForm.TabControl1Change(Sender: TObject);
+begin
+
+end;
+
+{$ENDREGION}
+
+{$REGION ' tLibraries '}
+
+constructor tLibraries.Create;
+var I:integer;
+begin
+  var FileArray: TArray<string> := TDirectory.GetFiles('.', '*.dll');
+  for var S: string in FileArray do AddObject(ExtractFileName(S), TLibrary.Create(S));
+end;
+
+destructor tLibraries.Destroy;
+begin
+  For var i: integer := 0 to Pred(Count) do Objects[I].Free;
+  inherited;
+end;
+
+function tLibraries.GetMethod(LibraryName, MethodName: string): pointer;
+var Lib: TLibrary;
+begin
+  Lib := TLibrary(Objects[IndexOfName(LibraryName)]);
+  Result := Lib.Objects[Lib.IndexOfName(MethodName)];
+end;
+
+{$ENDREGION}
+
+{ TLibrary }
+
+constructor TLibrary.Create(LibraryName: string);
 var
-  i: Integer;
+  I: integer;
   Name: PAnsiChar;
   Data: AnsiString;
-  ExtProc: TExtProc;
+  ExtProc: pointer;
   S: String;
-  ImageBase: dword;
   DosHeader: PImageDosHeader;
-  var PName: PDWord;
-
+  PName: PDWord;
 begin
-  ImageBase := LoadLibrary(PChar(FileName));
+  ImageBase := LoadLibrary(@LibraryName[1]);
   if (ImageBase <> 0) then
   begin
      DosHeader := PImageDosHeader(ImageBase);
      if (DosHeader^.e_magic = IMAGE_DOS_SIGNATURE) then
      begin
-
        var PEHeader: PImageNtHeaders := PImageNtHeaders(DWord(ImageBase) + DWord(DosHeader^._lfanew));
        if (PEHeader^.Signature = IMAGE_NT_SIGNATURE) then
        begin
@@ -69,33 +165,26 @@ begin
          For i := 0 to PExport^.NumberOfNames - 1 do
           begin
             name := PAnsiChar(PDWord(DWord(ImageBase) + PDword(pname)^));
-            ExtProc := GetProcAddress(ImageBase, name);
             S := Name;
             If not ContainsText(S, 'wrapper') then
             begin
-              Data := ExtProc([True]);
-              lb.Items.Add(concat('   ', Name, ' (', Data, ')'));
+              ExtProc := GetProcAddress(ImageBase, name);
+              AddObject(name, TObject(ExtProc));
+              Data := TExtProc(ExtProc)([]);
+              MainForm.TaskList.Items.Add(concat('   ', Name, ' (', Data, ')'));
               Data:='';
             end;
             inc(pname);
           end;
         end;
      end;
-     FreeLibrary(ImageBase);
   end;
 end;
 
-procedure TForm1.SearchForDLL;
-var SearchResult: TSearchRec;
+destructor TLibrary.Destroy;
 begin
-  If FindFirst('*.dll', faAnyFile, SearchResult) = 0 then
-  begin
-    repeat
-      lb.Items.Add(SearchResult.Name);
-      PrepareDll(SearchResult.Name);
-    until FindNext(SearchResult) <> 0;
-  end;
-  FindClose(SearchResult);
+  inherited;
+  FreeLibrary(ImageBase);
 end;
 
 end.

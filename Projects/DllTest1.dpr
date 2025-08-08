@@ -18,11 +18,12 @@ library DllTest1;
 uses
   ShareMem,
   System.SysUtils,
-  System.Classes;
+  System.Classes,
+  IOUtils;
 
 function GetData(const Data: array of variant): ansistring; stdcall;
 begin
-  If (TVarData(Data[0]).VType = vtBoolean) and Data[0] then
+  If (Length(Data) = 0) then
     Result := 'пераметр Data: string'
   else
     Result := Data[1] + ' test';
@@ -30,15 +31,28 @@ end;
 
 function GetData2(const Data: array of variant): ansistring; stdcall;
 begin
-  If (TVarData(Data[0]).VType = vtBoolean) and Data[0] then
+  If (Length(Data) = 0) then
     Result := 'пераметр Data: string'
   else
     Result := Data[1] + ' test2';
 end;
 
+function FindFiles(const Data: array of variant): ansistring; stdcall;
+begin
+  If (Length(Data) = 0) then
+    Result := 'пераметры Path: string; FileName: string; Recursive: byte'
+  else
+  begin
+    var FileArray: TArray<string> := TDirectory.GetFiles(Data[0], Data[1], TSearchOption(Data[2]));
+    Result := Format('По маске %s%s найдено %d файлов'#13#10, [Data[0], Data[1], Length(Filearray)]);
+    for var S: string in FileArray do Result := Result + S + #13#10;
+  end;
+end;
+
 exports
   GetData,
-  GetData2;
+  GetData2,
+  FindFiles;
 
 begin
 end.
