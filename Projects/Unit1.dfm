@@ -13,7 +13,7 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   TextHeight = 15
   object Button1: TButton
-    Left = 712
+    Left = 560
     Top = 482
     Width = 138
     Height = 25
@@ -45,5 +45,14 @@ object MainForm: TMainForm
         ExplicitHeight = 485
       end
     end
+  end
+  object Button2: TButton
+    Left = 704
+    Top = 482
+    Width = 141
+    Height = 25
+    Caption = 'Button2'
+    TabOrder = 2
+    OnClick = Button2Click
   end
 end

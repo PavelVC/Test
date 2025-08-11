@@ -24,9 +24,11 @@ type
     PageControl1: TPageControl;
     TabSheet1: TTabSheet;
     TaskList: TListBox;
+    Button2: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure TabControl1Change(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     Libraries: tLibraries;
     procedure SearchForDLL;
@@ -76,7 +78,26 @@ begin
   with Tab do
   begin
     Visible :=True;
-    Caption := 'Поиск...';
+    Caption := 'Поиск файлов...';
+    PageControl := PageControl1;
+    PageControl1.ActivePage := Tab;
+  end;
+  Memo := TMemo.Create(Tab);
+  Memo.Parent := Tab;
+  Memo.Align := alClient;
+  Memo.Text := Sa;
+end;
+
+procedure TMainForm.Button2Click(Sender: TObject);
+var I: integer; Sa: string; P: pointer; Tab: TTabSheet; Memo: TMemo;
+begin
+  P := Libraries.Method['DllTest1.dll', 'FindStringInFile'];
+  Sa := tExtProc(P)(['D:\Заблудившийся\VIDEO_TS\VTS_06_1.VOB','34']);
+  Tab := TTabSheet.Create(PageControl1);
+  with Tab do
+  begin
+    Visible :=True;
+    Caption := 'Поиск подстроки...';
     PageControl := PageControl1;
     PageControl1.ActivePage := Tab;
   end;

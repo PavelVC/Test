@@ -1,58 +1,63 @@
 library DllTest1;
 
-{ Important note about DLL memory management: ShareMem must be the
-  first unit in your library's USES clause AND your project's (select
-  Project-View Source) USES clause if your DLL exports any procedures or
-  functions that pass strings as parameters or function results. This
-  applies to all strings passed to and from your DLL--even those that
-  are nested in records and classes. ShareMem is the interface unit to
-  the BORLNDMM.DLL shared memory manager, which must be deployed along
-  with your DLL. To avoid using BORLNDMM.DLL, pass string information
-  using PChar or ShortString parameters.
-
-  Important note about VCL usage: when this DLL will be implicitly
-  loaded and this DLL uses TWicImage / TImageCollection created in
-  any unit initialization section, then Vcl.WicImageInit must be
-  included into your library's USES clause. }
-
 uses
   ShareMem,
   System.SysUtils,
   System.Classes,
-  IOUtils;
-
-function GetData(const Data: array of variant): ansistring; stdcall;
-begin
-  If (Length(Data) = 0) then
-    Result := 'пераметр Data: string'
-  else
-    Result := Data[1] + ' test';
-end;
-
-function GetData2(const Data: array of variant): ansistring; stdcall;
-begin
-  If (Length(Data) = 0) then
-    Result := 'пераметр Data: string'
-  else
-    Result := Data[1] + ' test2';
-end;
+  IOUtils,
+  StrUtils;
 
 function FindFiles(const Data: array of variant): ansistring; stdcall;
 begin
   If (Length(Data) = 0) then
-    Result := 'пераметры Path: string; FileName: string; Recursive: byte'
+    Result := 'TFindFilesFrame'
   else
   begin
-    var FileArray: TArray<string> := TDirectory.GetFiles(Data[0], Data[1], TSearchOption(Data[2]));
-    Result := Format('По маске %s%s найдено %d файлов'#13#10, [Data[0], Data[1], Length(Filearray)]);
-    for var S: string in FileArray do Result := Result + S + #13#10;
+    Result := '';
+    For var Sl: string in string(Data[1]).Split([',']) do
+    begin
+      var FileArray: TArray<string> := TDirectory.GetFiles(Data[0], Trim(Sl), TSearchOption(Data[2]));
+      Result := Result + Format('По маске %s%s найдено %d файлов'#13#10, [Data[0], Trim(Sl), Length(Filearray)]);
+      If Data[3] then for var S: string in FileArray do Result := Result + S + #13#10;
+    end;
+  end;
+end;
+
+function FindStringInFile(const Data: array of variant): ansistring; stdcall;
+var S: AnsiString; K, L: Integer; Sx, Sl: string;
+begin
+  If (Length(Data) = 0) then
+    Result := 'TFindStringInFileFrame'
+  else
+  begin
+    Result := '';
+    For Sl in string(Data[1]).Split([',']) do
+    begin
+      Sx := Trim(Sl);
+      var Fs: TFilestream := TFileStream.Create(Data[0], fmOpenRead);
+      Fs.Position := 0;
+      SetLength(S, Fs.Size);
+      Fs.Read(S[1], Fs.Size);
+      Fs.Free;
+      L := 0;
+      K := Pos(Sx, S, 1);
+      while K > 0 do
+      begin
+        Inc(L);
+        If Data[2] then Result := Concat(Result, Format('%.*X (%D)', [8, K, K]), #$0d#$0A);
+        K := Pos(Sx, S, K + 1);
+      end;
+      Result := Concat(Result, 'Найдено ', L.ToString, ' вхождений строки "', Sx, '" в файле ', Data[0], #$0D#$0A);
+    end;
   end;
 end;
 
 exports
-  GetData,
-  GetData2,
-  FindFiles;
+  FindFiles,
+  FindStringInFile;
 
 begin
 end.
+
+
+

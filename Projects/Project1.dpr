@@ -3,7 +3,10 @@ program Project1;
 uses
   ShareMem,
   Vcl.Forms,
-  Unit1 in 'Unit1.pas' {MainForm};
+  uMainForm in 'uMainForm.pas' {MainForm},
+  uFindStringInFileFrame in 'uFindStringInFileFrame.pas' {FindStringInFileFrame: TFrame},
+  uAbstractFrame in 'uAbstractFrame.pas' {AbstractFrame: TFrame},
+  uFindFilesFrame in 'uFindFilesFrame.pas' {FindFilesFrame};
 
 {$R *.res}
 
