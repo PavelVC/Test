@@ -43,7 +43,7 @@ implementation
 
 procedure TFindStringInFileFrame.Button1Click(Sender: TObject);
 begin
-  Log.Text := Log.Text + Method([Param1.Text, Param2.Text, cbShowFiles.Checked]);
+  Log.Text := Log.Text + Method([Application.MainForm.Handle, Param1.Text, Param2.Text, cbShowFiles.Checked]);
 end;
 
 procedure TFindStringInFileFrame.Button2Click(Sender: TObject);

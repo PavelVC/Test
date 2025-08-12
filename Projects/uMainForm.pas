@@ -16,41 +16,17 @@ uses
   Vcl.ComCtrls;
 
 type
-  tLibraries= class;
-  TLibrary = class;
-
   TMainForm = class(TForm)
     PageControl1: TPageControl;
     TabSheet1: TTabSheet;
-    TaskList: TListBox;
-//    procedure Button2Click(Sender: TObject);
-    procedure FormShow(Sender: TObject);
+    Log: TMemo;
     procedure PageControl1Change(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
-    Libraries: tLibraries;
     procedure AddPage(ImageBase: DWORD; PName: PDWORD);
     procedure AddPages(FileName: string);
+    procedure WriteLog(var Msg: TMessage); message WM_USER + 1;
   public
-    constructor Create(AOwner: tComponent); override;
-    destructor Destroy; override;
-  end;
-
-  tLibraries = class(tStringList)
-  private
-    Methods: tStringList;
-    function GetMethod(LibraryName, MethodName: string): pointer;
-  public
-    property Method[LibraryName, MethodName: string]: pointer read GetMethod;
-    constructor Create;
-    destructor Destroy; override;
-  end;
-
-  TLibrary = class(tStringList)
-  private
-    ImageBase: dword;
-    Description: string;
-  public
-    constructor Create(LibraryName: string);
     destructor Destroy; override;
   end;
 
@@ -63,12 +39,10 @@ implementation
 
 uses
   IOUtils,
-  AnsiStrings, uAbstractFrame;
+  AnsiStrings,
+  uAbstractFrame;
 
 {$REGION ' TMainForm '}
-
-type
- TExtProc = function(const Data: array of variant): AnsiString; stdcall;
 
 procedure TMainForm.AddPage(ImageBase: DWORD; PName: PDWORD);
 var FrameClassName: string; Tab: TTabSheet; FrameClass: TAbstractFrameClass; Frame: TAbstractFrame;
@@ -126,22 +100,17 @@ begin
   end;
 end;
 
-constructor TMainForm.Create(AOwner: tComponent);
-begin
-  inherited;
-end;
-
 destructor TMainForm.Destroy;
 begin
-  Libraries.Free;;
   inherited;
 end;
 
-procedure TMainForm.FormShow(Sender: TObject);
+procedure TMainForm.FormCreate(Sender: TObject);
 begin
   var FileArray: TArray<string> := TDirectory.GetFiles(ExtractFilePath(ParamStr(0)), '*.dll');
   for var S: string in FileArray do AddPages(S);
   PageControl1.ActivePage := TabSheet1;
+  Log.Clear;
 end;
 
 procedure TMainForm.PageControl1Change(Sender: TObject);
@@ -149,75 +118,9 @@ begin
   TWinControl(PageControl1.ActivePage.Controls[0]).Visible := True;
 end;
 
-{$ENDREGION}
-
-{$REGION ' tLibraries '}
-
-constructor tLibraries.Create;
+procedure TMainForm.WriteLog(var Msg: TMessage);
 begin
-end;
-
-destructor tLibraries.Destroy;
-begin
-  For var i: integer := 0 to Pred(Count) do Objects[I].Free;
-  inherited;
-end;
-
-function tLibraries.GetMethod(LibraryName, MethodName: string): pointer;
-var Lib: TLibrary;
-begin
-  Lib := TLibrary(Objects[IndexOfName(LibraryName)]);
-  Result := Lib.Objects[Lib.IndexOfName(MethodName)];
-end;
-
-{$ENDREGION}
-
-{$REGION ' TLibrary '}
-
-constructor TLibrary.Create(LibraryName: string);
-var
-  I: integer;
-  Name: PAnsiChar;
-  Data: AnsiString;
-  ExtProc: pointer;
-  S: String;
-  DosHeader: PImageDosHeader;
-  PName: PDWord;
-begin
-  ImageBase := LoadLibrary(@LibraryName[1]);
-  if (ImageBase <> 0) then
-  begin
-     DosHeader := PImageDosHeader(ImageBase);
-     if (DosHeader^.e_magic = IMAGE_DOS_SIGNATURE) then
-     begin
-       var PEHeader: PImageNtHeaders := PImageNtHeaders(DWord(ImageBase) + DWord(DosHeader^._lfanew));
-       if (PEHeader^.Signature = IMAGE_NT_SIGNATURE) then
-       begin
-         var PExport: PImageExportDirectory := PImageExportDirectory(ImageBase + DWord(PEHeader^.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress));
-         PName := PDWord(ImageBase + DWord(PExport^.AddressOfNames));
-         For i := 0 to PExport^.NumberOfNames - 1 do
-          begin
-            name := PAnsiChar(PDWord(DWord(ImageBase) + PDword(pname)^));
-            S := Name;
-            If not ContainsText(S, 'wrapper') then
-            begin
-              ExtProc := GetProcAddress(ImageBase, name);
-              AddObject(name, TObject(ExtProc));
-              Data := TExtProc(ExtProc)([]);
-              MainForm.TaskList.Items.Add(concat('   ', Name, ' (', Data, ')'));
-              Data:='';
-            end;
-            inc(pname);
-          end;
-        end;
-     end;
-  end;
-end;
-
-destructor TLibrary.Destroy;
-begin
-  inherited;
-  FreeLibrary(ImageBase);
+  Log.Lines.Add(Concat(FormatDateTime('dd.mm.yy hh.nn.ss', Now), ' ', pAnsiChar(Msg.LParam)));
 end;
 
 {$ENDREGION}

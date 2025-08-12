@@ -7,11 +7,12 @@ object MainForm: TMainForm
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -12
+  Font.Height = -13
   Font.Name = 'Segoe UI'
   Font.Style = []
-  OnShow = FormShow
-  TextHeight = 15
+  WindowState = wsMaximized
+  OnCreate = FormCreate
+  TextHeight = 17
   object PageControl1: TPageControl
     Left = 0
     Top = 0
@@ -21,20 +22,17 @@ object MainForm: TMainForm
     Align = alClient
     TabOrder = 0
     OnChange = PageControl1Change
-    ExplicitWidth = 853
     object TabSheet1: TTabSheet
       Caption = ' '#1046#1091#1088#1085#1072#1083' '
-      object TaskList: TListBox
+      object Log: TMemo
         Left = 0
         Top = 0
         Width = 1105
-        Height = 483
+        Height = 481
         Align = alClient
-        BevelInner = bvNone
-        BevelOuter = bvNone
-        ItemHeight = 15
+        Lines.Strings = (
+          '')
         TabOrder = 0
-        ExplicitWidth = 845
       end
     end
   end

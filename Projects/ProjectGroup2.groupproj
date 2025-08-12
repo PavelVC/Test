@@ -6,10 +6,13 @@
         <Projects Include="DllTest1.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="DllTest2.dproj">
+            <Dependencies/>
+        </Projects>
         <Projects Include="Project1.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="D:\Projects\Project2.dproj">
+        <Projects Include="D:\Projects\Project3.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -29,6 +32,15 @@
     <Target Name="DllTest1:Make">
         <MSBuild Projects="DllTest1.dproj" Targets="Make"/>
     </Target>
+    <Target Name="DllTest2">
+        <MSBuild Projects="DllTest2.dproj"/>
+    </Target>
+    <Target Name="DllTest2:Clean">
+        <MSBuild Projects="DllTest2.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DllTest2:Make">
+        <MSBuild Projects="DllTest2.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Project1">
         <MSBuild Projects="Project1.dproj"/>
     </Target>
@@ -38,23 +50,23 @@
     <Target Name="Project1:Make">
         <MSBuild Projects="Project1.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Project2">
-        <MSBuild Projects="D:\Projects\Project2.dproj"/>
+    <Target Name="Project3">
+        <MSBuild Projects="D:\Projects\Project3.dproj"/>
     </Target>
-    <Target Name="Project2:Clean">
-        <MSBuild Projects="D:\Projects\Project2.dproj" Targets="Clean"/>
+    <Target Name="Project3:Clean">
+        <MSBuild Projects="D:\Projects\Project3.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="Project2:Make">
-        <MSBuild Projects="D:\Projects\Project2.dproj" Targets="Make"/>
+    <Target Name="Project3:Make">
+        <MSBuild Projects="D:\Projects\Project3.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="DllTest1;Project1;Project2"/>
+        <CallTarget Targets="DllTest1;DllTest2;Project1;Project3"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="DllTest1:Clean;Project1:Clean;Project2:Clean"/>
+        <CallTarget Targets="DllTest1:Clean;DllTest2:Clean;Project1:Clean;Project3:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="DllTest1:Make;Project1:Make;Project2:Make"/>
+        <CallTarget Targets="DllTest1:Make;DllTest2:Make;Project1:Make;Project3:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

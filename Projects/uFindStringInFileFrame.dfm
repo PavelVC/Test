@@ -33,7 +33,6 @@ object FindStringInFileFrame: TFindStringInFileFrame
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 1
-    ExplicitLeft = -2
     object Button1: TButton
       AlignWithMargins = True
       Left = 990
@@ -54,8 +53,6 @@ object FindStringInFileFrame: TFindStringInFileFrame
       BevelOuter = bvNone
       Caption = #1052#1072#1089#1082#1072' '#1087#1086#1080#1089#1082#1072
       TabOrder = 1
-      ExplicitLeft = 319
-      ExplicitTop = -1
     end
     object Param2: TEdit
       AlignWithMargins = True
@@ -65,7 +62,6 @@ object FindStringInFileFrame: TFindStringInFileFrame
       Height = 24
       Align = alLeft
       TabOrder = 2
-      ExplicitLeft = 384
       ExplicitHeight = 23
     end
     object Panel3: TPanel
@@ -88,8 +84,7 @@ object FindStringInFileFrame: TFindStringInFileFrame
       Margins.Right = 0
       Align = alLeft
       TabOrder = 4
-      ExplicitLeft = 132
-      ExplicitTop = -1
+      ExplicitHeight = 23
     end
     object cbShowFiles: TCheckBox
       AlignWithMargins = True
@@ -100,7 +95,6 @@ object FindStringInFileFrame: TFindStringInFileFrame
       Align = alLeft
       Caption = #1055#1086#1082#1072#1079#1072#1090#1100' '#1074#1093#1086#1078#1076#1077#1085#1080#1103
       TabOrder = 5
-      ExplicitLeft = 511
     end
     object Button3: TButton
       AlignWithMargins = True
@@ -112,8 +106,6 @@ object FindStringInFileFrame: TFindStringInFileFrame
       Caption = #1054#1095#1080#1089#1090#1080#1090#1100' '#1088#1077#1079#1091#1083#1100#1090#1072#1090#1099
       TabOrder = 6
       OnClick = Button3Click
-      ExplicitLeft = 888
-      ExplicitTop = -1
     end
     object Button2: TButton
       AlignWithMargins = True
@@ -128,8 +120,6 @@ object FindStringInFileFrame: TFindStringInFileFrame
       Caption = '...'
       TabOrder = 7
       OnClick = Button2Click
-      ExplicitLeft = 345
-      ExplicitTop = -2
     end
   end
 end

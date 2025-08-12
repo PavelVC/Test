@@ -92,6 +92,7 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
+        <DCCReference Include="uMethodThread.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -133,7 +134,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win32\Debug\DllTest1.dll" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="bin\DllTest1.dll" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>DllTest1.dll</RemoteName>
                         <Overwrite>true</Overwrite>

@@ -144,6 +144,10 @@
             <Form>FindFilesFrame</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="uShellFrame.pas">
+            <Form>ShellFrame</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

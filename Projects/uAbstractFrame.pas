@@ -7,8 +7,7 @@ uses
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs;
 
 type
-  TExtProc = function(const Data: array of variant): AnsiString; stdcall;
-
+  tExtProc = function(const Data: array of variant): AnsiString; stdcall;
 
 type
   TAbstractFrame = class(TForm)

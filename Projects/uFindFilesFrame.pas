@@ -48,7 +48,7 @@ uses
 
 procedure TFindFilesFrame.Button1Click(Sender: TObject);
 begin
-  Log.Text := Log.Text + Method([Param1.Text, Param2.Text, Ord(cbScanSubDirs.Checked), cbShowFiles.Checked]);
+  Log.Text := Log.Text + Method([Application.MainForm.Handle, Param1.Text, Param2.Text, Ord(cbScanSubDirs.Checked), cbShowFiles.Checked]);
 end;
 
 procedure TFindFilesFrame.Button2Click(Sender: TObject);

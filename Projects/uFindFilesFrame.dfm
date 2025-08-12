@@ -19,7 +19,6 @@ object FindFilesFrame: TFindFilesFrame
     Margins.Bottom = 0
     Align = alClient
     TabOrder = 0
-    ExplicitLeft = -2
   end
   object Panel1: TPanel
     AlignWithMargins = True
@@ -34,7 +33,6 @@ object FindFilesFrame: TFindFilesFrame
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 1
-    ExplicitLeft = -2
     object Button1: TButton
       AlignWithMargins = True
       Left = 1048
@@ -55,7 +53,6 @@ object FindFilesFrame: TFindFilesFrame
       BevelOuter = bvNone
       Caption = #1052#1072#1089#1082#1072' '#1087#1086#1080#1089#1082#1072
       TabOrder = 1
-      ExplicitLeft = 276
     end
     object Param2: TEdit
       AlignWithMargins = True
@@ -65,7 +62,6 @@ object FindFilesFrame: TFindFilesFrame
       Height = 24
       Align = alLeft
       TabOrder = 2
-      ExplicitLeft = 384
       ExplicitHeight = 23
     end
     object Panel3: TPanel
@@ -98,7 +94,6 @@ object FindFilesFrame: TFindFilesFrame
       Align = alLeft
       Caption = #1048#1089#1082#1072#1090#1100' '#1074#1086' '#1074#1083#1086#1078#1077#1085#1085#1099#1093' '#1087#1072#1087#1082#1072#1093
       TabOrder = 5
-      ExplicitLeft = 511
     end
     object cbShowFiles: TCheckBox
       AlignWithMargins = True
@@ -109,7 +104,6 @@ object FindFilesFrame: TFindFilesFrame
       Align = alLeft
       Caption = #1055#1086#1082#1072#1079#1072#1090#1100'  '#1092#1072#1081#1083#1099
       TabOrder = 6
-      ExplicitLeft = 718
     end
     object Button2: TButton
       AlignWithMargins = True
@@ -124,7 +118,6 @@ object FindFilesFrame: TFindFilesFrame
       Caption = '...'
       TabOrder = 7
       OnClick = Button2Click
-      ExplicitTop = -2
     end
     object Button3: TButton
       AlignWithMargins = True
@@ -136,7 +129,6 @@ object FindFilesFrame: TFindFilesFrame
       Caption = #1054#1095#1080#1089#1090#1080#1090#1100' '#1088#1077#1079#1091#1083#1100#1090#1072#1090#1099
       TabOrder = 8
       OnClick = Button3Click
-      ExplicitTop = -1
     end
   end
   object OpenDialog1: TOpenDialog
