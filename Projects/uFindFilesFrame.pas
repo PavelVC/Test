@@ -29,11 +29,13 @@ type
     Button2: TButton;
     OpenDialog1: TOpenDialog;
     Button3: TButton;
+    Button4: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
   private
-    { Private declarations }
+    procedure WriteLog(var Msg: TMessage); message WM_USER + 1;
   public
     function GetCaption: string; override;
   end;
@@ -48,7 +50,7 @@ uses
 
 procedure TFindFilesFrame.Button1Click(Sender: TObject);
 begin
-  Log.Text := Log.Text + Method([Application.MainForm.Handle, Param1.Text, Param2.Text, Ord(cbScanSubDirs.Checked), cbShowFiles.Checked]);
+  Method([Application.MainForm.Handle, Handle, Param1.Text, Param2.Text, Ord(cbScanSubDirs.Checked), cbShowFiles.Checked]);
 end;
 
 procedure TFindFilesFrame.Button2Click(Sender: TObject);
@@ -62,9 +64,19 @@ begin
   Log.Clear;
 end;
 
+procedure TFindFilesFrame.Button4Click(Sender: TObject);
+begin
+  Method([Application.MainForm.Handle, 'ThreadTerminate']);
+end;
+
 function TFindFilesFrame.GetCaption: string;
 begin
   Result := ' Поиск файлов по маске ';
+end;
+
+procedure TFindFilesFrame.WriteLog(var Msg: TMessage);
+begin
+  Log.Lines.Add(Concat(FormatDateTime('dd.mm.yy hh.nn.ss', Now), ' ', pAnsiChar(Msg.LParam)));
 end;
 
 begin

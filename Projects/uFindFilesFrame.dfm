@@ -62,6 +62,7 @@ object FindFilesFrame: TFindFilesFrame
       Height = 24
       Align = alLeft
       TabOrder = 2
+      Text = '*.dll, *.bin'
       ExplicitHeight = 23
     end
     object Panel3: TPanel
@@ -83,6 +84,7 @@ object FindFilesFrame: TFindFilesFrame
       Margins.Right = 0
       Align = alLeft
       TabOrder = 4
+      Text = 'C:\Windows\System32\'
       ExplicitHeight = 23
     end
     object cbScanSubDirs: TCheckBox
@@ -129,6 +131,18 @@ object FindFilesFrame: TFindFilesFrame
       Caption = #1054#1095#1080#1089#1090#1080#1090#1100' '#1088#1077#1079#1091#1083#1100#1090#1072#1090#1099
       TabOrder = 8
       OnClick = Button3Click
+    end
+    object Button4: TButton
+      AlignWithMargins = True
+      Left = 762
+      Top = 3
+      Width = 120
+      Height = 24
+      Align = alRight
+      Caption = #1055#1088#1077#1088#1074#1072#1090#1100
+      TabOrder = 9
+      OnClick = Button4Click
+      ExplicitLeft = 712
     end
   end
   object OpenDialog1: TOpenDialog

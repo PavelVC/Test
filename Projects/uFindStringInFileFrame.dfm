@@ -33,7 +33,7 @@ object FindStringInFileFrame: TFindStringInFileFrame
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 1
-    object Button1: TButton
+    object Exec: TButton
       AlignWithMargins = True
       Left = 990
       Top = 3
@@ -42,7 +42,7 @@ object FindStringInFileFrame: TFindStringInFileFrame
       Align = alRight
       Caption = #1042#1099#1087#1086#1083#1085#1080#1090#1100
       TabOrder = 0
-      OnClick = Button1Click
+      OnClick = ExecClick
     end
     object Panel2: TPanel
       Left = 339
@@ -96,7 +96,7 @@ object FindStringInFileFrame: TFindStringInFileFrame
       Caption = #1055#1086#1082#1072#1079#1072#1090#1100' '#1074#1093#1086#1078#1076#1077#1085#1080#1103
       TabOrder = 5
     end
-    object Button3: TButton
+    object Clear: TButton
       AlignWithMargins = True
       Left = 830
       Top = 3
@@ -105,9 +105,9 @@ object FindStringInFileFrame: TFindStringInFileFrame
       Align = alRight
       Caption = #1054#1095#1080#1089#1090#1080#1090#1100' '#1088#1077#1079#1091#1083#1100#1090#1072#1090#1099
       TabOrder = 6
-      OnClick = Button3Click
+      OnClick = ClearClick
     end
-    object Button2: TButton
+    object GetDir: TButton
       AlignWithMargins = True
       Left = 310
       Top = 2
@@ -119,7 +119,7 @@ object FindStringInFileFrame: TFindStringInFileFrame
       Align = alLeft
       Caption = '...'
       TabOrder = 7
-      OnClick = Button2Click
+      OnClick = GetDirClick
     end
   end
 end

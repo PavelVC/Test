@@ -5,22 +5,18 @@ uses
   System.SysUtils,
   System.Classes,
   Windows,
-  uMethodThread in 'uMethodThread.pas';
+  uMethodThread in 'D:\Projects\uMethodThread.pas';
 
 type
-  tLogProc = procedure(Mess: string) of object;
-
   tMethodThread = class(TAbstractMethodThread)
   private
-    CommandLine: AnsiString;
-    MainFormHandle: HWND;
+    const
+      cMainHandle = 0;
+      cFrameHandle = 1;
+      cCommandLine = 2;
   protected
     procedure Execute; override;
   end;
-
-var
-  Result: AnsiString;
-  BreakThread: boolean;
 
 { tMethodThread }
 
@@ -29,23 +25,26 @@ var
   StartInfo: TStartupInfoA;
   ProcInfo: TProcessInformation;
   WaitRes: cardinal;
+  Title: AnsiString;
 begin
-  Result := Concat('Задание Shell execute ', CommandLine, ' запущено');
-  PostMessage(MainFormHandle, UM_WRITELOG, 0, UIntPtr(@Result[1]));
+  var Cmd: AnsiString := Params[cCommandLine];
+  Title := Concat('Задание Shell execute ', Cmd);
+  WriteLog(Params[cMainHandle], Title + ' запущено');
+  WriteLog(Params[cFrameHandle], 'выполнение');
   FillChar(StartInfo, SizeOf(StartInfo), 0);
   StartInfo.cb := SizeOf(StartInfo);
   StartInfo.dwFlags := STARTF_USESHOWWINDOW;
   StartInfo.wShowWindow := SW_SHOWNORMAL;
-  If CreateProcessA(nil, pAnsiChar(@CommandLine[1]),  nil, nil, False, CREATE_NO_WINDOW, nil, nil, StartInfo, ProcInfo) then
+  If CreateProcessA(nil, @Cmd[1],  nil, nil, False, CREATE_NO_WINDOW, nil, nil, StartInfo, ProcInfo) then
   begin
     repeat
-      WaitRes := WaitForSingleObject(ProcInfo.hProcess, 50);
+      WaitRes := WaitForSingleObject(ProcInfo.hProcess, 250);
+      WriteLog(Params[cFrameHandle], '$$progress$$');
     until BreakThread or Terminated or (WaitRes = WAIT_OBJECT_0);
     If BreakThread then
     begin
-      Result := 'Задание Shell execute прервано';
       TerminateProcess(ProcInfo.hProcess, 0);
-      PostMessage(MainFormHandle, UM_WRITELOG, 0, UIntPtr(@Result[1]));
+      WriteLog(Params[cMainHandle], Title + ' прервано');
       BreakThread := False;
       Terminate;
       Exit;
@@ -53,27 +52,23 @@ begin
   end
   else
     RaiseLastOSError;
-  Result := 'Задание Shell execute выполнено';
-  PostMessage(MainFormHandle, UM_WRITELOG, 0, UIntPtr(@Result[1]));
+  WriteLog(Params[cFrameHandle], 'завершено');
+  WriteLog(Params[cMainHandle], Title + ' выполнено');
 end;
 
-function RunShellCommand(const Data: array of variant; LogProc: tLogProc):ansistring; stdcall;
 var
-  StartInfo: TStartupInfoA;
-  ProcInfo: TProcessInformation;
+  MethodThread: tMethodThread;
+
+function RunShellCommand(const Data: array of variant):ansistring; stdcall;
 begin
   If (Length(Data) = 0) then
     Result := 'TShellFrame'
-  else if Data[1] = 'ThreadTerminate' then
-    BreakThread := True
+  else if ansistring(Data[1]) = 'ThreadTerminate' then
+    MethodThread.BreakThread := True
   else
-  with TMethodThread.Create(True) do
   begin
-    MainFormHandle := Data[0];
-    FreeOnTerminate := True;
-    CommandLine := Data[1];
-    BreakThread := False;
-    Start;
+    MethodThread := TMethodThread.Create(Data);
+    MethodThread.Start;
   end;
 end;
 

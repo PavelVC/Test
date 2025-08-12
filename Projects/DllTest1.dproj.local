@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.402,D:\Projects\DllTest1.dproj=D:\Projects\Project2.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.402,D:\Projects\Project2.dproj=D:\Projects\DllTest1.dproj</Transaction>
     <Transaction>1899.12.30 00:00:00.000.509,=C:\Users\pavel\Test\Projects\uMethodThread.pas</Transaction>
   </Transactions>
 </BorlandProject>

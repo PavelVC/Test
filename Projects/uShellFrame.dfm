@@ -70,6 +70,7 @@ object ShellFrame: TShellFrame
       Text = 
         '"C:\Program Files\7-Zip\7z.exe" a -mx5 -r0 d:\Proj.zip C:\Projec' +
         'ts'
+      ExplicitHeight = 23
     end
     object Button2: TButton
       AlignWithMargins = True
