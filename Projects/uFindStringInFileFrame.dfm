@@ -121,5 +121,17 @@ object FindStringInFileFrame: TFindStringInFileFrame
       TabOrder = 7
       OnClick = GetDirClick
     end
+    object Button4: TButton
+      AlignWithMargins = True
+      Left = 704
+      Top = 3
+      Width = 120
+      Height = 24
+      Align = alRight
+      Caption = #1055#1088#1077#1088#1074#1072#1090#1100
+      TabOrder = 8
+      OnClick = Button4Click
+      ExplicitLeft = 762
+    end
   end
 end
