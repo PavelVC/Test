@@ -62,7 +62,7 @@ object FindFilesFrame: TFindFilesFrame
       Height = 24
       Align = alLeft
       TabOrder = 2
-      Text = '*.dll, *.bin'
+      Text = '*.dll, *.exe'
       ExplicitHeight = 23
     end
     object Panel3: TPanel
@@ -142,7 +142,6 @@ object FindFilesFrame: TFindFilesFrame
       Caption = #1055#1088#1077#1088#1074#1072#1090#1100
       TabOrder = 9
       OnClick = Button4Click
-      ExplicitLeft = 712
     end
   end
   object OpenDialog1: TOpenDialog
