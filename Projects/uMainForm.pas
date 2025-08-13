@@ -23,8 +23,9 @@ type
     procedure PageControl1Change(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
-    procedure AddPage(ImageBase: DWORD; PName: PDWORD);
-    procedure AddPages(FileName: string);
+    LibHandles: array of HMODULE;
+    procedure AddPage(ImageBase: HMODULE; PName: PDWORD);
+    procedure AddPages(FileName: string; var K: integer);
     procedure WriteLog(var Msg: TMessage); message WM_USER + 1;
   public
     destructor Destroy; override;
@@ -44,7 +45,7 @@ uses
 
 {$REGION ' TMainForm '}
 
-procedure TMainForm.AddPage(ImageBase: DWORD; PName: PDWORD);
+procedure TMainForm.AddPage(ImageBase: HMODULE; PName: PDWORD);
 var FrameClassName: string; Tab: TTabSheet; FrameClass: TAbstractFrameClass; Frame: TAbstractFrame;
 begin
   var MethodName: pAnsiChar := PAnsiChar(PDWord(DWord(ImageBase) + PDword(pname)^));
@@ -77,13 +78,15 @@ begin
   end;
 end;
 
-procedure TMainForm.AddPages(FileName: string);
+procedure TMainForm.AddPages(FileName: string; var K: integer);
 var PName: PDWORD;
 begin
   try
     FileName := ExtractFileName(FileName);
-    var ImageBase: DWord := LoadLibrary(@FileName[1]);
+    var ImageBase: HMODULE := LoadLibrary(@FileName[1]);
     if (ImageBase = 0) then raise Exception.Create('Ошибка загрузки библиотеки ' + FileName);
+    LibHandles[K] := ImageBase;
+    Inc(K);
     var DosHeader: PImageDosHeader := PImageDosHeader(ImageBase);
     if (DosHeader^.e_magic <> IMAGE_DOS_SIGNATURE) then raise Exception.Create('Ошибка DOS проверки сигнатуры библиотеки ' + FileName);
     var PEHeader: PImageNtHeaders := PImageNtHeaders(DWord(ImageBase) + DWord(DosHeader^._lfanew));
@@ -102,13 +105,16 @@ end;
 
 destructor TMainForm.Destroy;
 begin
+  for var H: DWORD in LibHandles do FreeLibrary(H);
   inherited;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   var FileArray: TArray<string> := TDirectory.GetFiles(ExtractFilePath(ParamStr(0)), '*.dll');
-  for var S: string in FileArray do AddPages(S);
+  SetLength(LibHandles, Length(FileArray));
+  var K: integer := 0;
+  for var S: string in FileArray do AddPages(S, K);
   PageControl1.ActivePage := TabSheet1;
   Log.Clear;
 end;
